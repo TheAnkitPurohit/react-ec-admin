@@ -7,12 +7,11 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const IndexPage = lazy(() => import('src/pages/dashboard/one'));
-const PageTwo = lazy(() => import('src/pages/dashboard/two'));
-const PageThree = lazy(() => import('src/pages/dashboard/three'));
-const PageFour = lazy(() => import('src/pages/dashboard/four'));
-const PageFive = lazy(() => import('src/pages/dashboard/five'));
-const PageSix = lazy(() => import('src/pages/dashboard/six'));
+const DashboardPage = lazy(() => import('src/pages/dashboard'));
+const CategoryPage = lazy(() => import('src/pages/dashboard/category'));
+const ManagerPage = lazy(() => import('src/pages/dashboard/manager'));
+const ProfilePage = lazy(() => import('src/pages/dashboard/profile'));
+const ChangePasswordPage = lazy(() => import('src/pages/dashboard/change-password'));
 
 // ----------------------------------------------------------------------
 
@@ -27,17 +26,17 @@ export const dashboardRoutes = [
       </DashboardLayout>
     ),
     children: [
-      { element: <IndexPage />, index: true },
-      { path: 'two', element: <PageTwo /> },
-      { path: 'three', element: <PageThree /> },
-      {
-        path: 'group',
-        children: [
-          { element: <PageFour />, index: true },
-          { path: 'five', element: <PageFive /> },
-          { path: 'six', element: <PageSix /> },
-        ],
-      },
+      { element: <DashboardPage />, index: true },
+      { path: 'sales', element: <CategoryPage /> },
+      { path: 'users', element: <CategoryPage /> },
+      { path: 'products', element: <CategoryPage /> },
+      { path: 'category', element: <CategoryPage /> },
+      { path: 'group', element: <CategoryPage /> },
+      { path: 'review', element: <CategoryPage /> },
+      { path: 'inquiry', element: <CategoryPage /> },
+      { path: 'manager', element: <ManagerPage /> },
+      { path: 'profile', element: <ProfilePage /> },
+      { path: 'change-password', element: <ChangePasswordPage /> },
     ],
   },
 ];

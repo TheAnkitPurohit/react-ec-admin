@@ -25,13 +25,21 @@ export function createPresets(preset: PresetType) {
 
 // ----------------------------------------------------------------------
 
-const cyan = {
-  lighter: '#CCF4FE',
-  light: '#68CDF9',
-  main: '#078DEE',
-  dark: '#0351AB',
-  darker: '#012972',
+export const blackText = {
+  primary: '#000000', // Main black
+  secondary: '#333333', // Slightly lighter than main black
+  tertiary: '#666666', // Even lighter than secondary
+  contrast: '#FFFFFF', // White for high contrast
+};
+
+export const cyan = {
+  lighter: '#b3e0ff',
+  light: '#80bfff',
+  main: '#4299e1',
+  dark: '#297fb8',
+  darker: '#105680',
   contrastText: '#FFFFFF',
+  lightBg: '#4299E1',
 };
 
 const purple = {
@@ -71,7 +79,7 @@ const red = {
 };
 
 export const presetOptions = [
-  { name: 'default', value: primary.main },
+  { name: 'default', value: cyan.main },
   { name: 'cyan', value: cyan.main },
   { name: 'purple', value: purple.main },
   { name: 'blue', value: blue.main },

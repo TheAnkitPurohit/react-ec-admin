@@ -6,17 +6,19 @@ import TextField, { TextFieldProps } from '@mui/material/TextField';
 
 type Props = TextFieldProps & {
   name: string;
+  isDisable?: boolean;
 };
 
-export default function RHFTextField({ name, helperText, type, ...other }: Props) {
+export default function RHFTextField({ name, helperText, type, isDisable, ...other }: Props) {
   const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }) => (
+      render={({ field, fieldState: { error, isTouched, isDirty } }) => (
         <TextField
+          disabled={isDisable}
           {...field}
           fullWidth
           type={type}
@@ -27,6 +29,12 @@ export default function RHFTextField({ name, helperText, type, ...other }: Props
             } else {
               field.onChange(event.target.value);
             }
+            if (isTouched) {
+              field.onBlur();
+            }
+          }}
+          onBlur={(event) => {
+            field.onBlur();
           }}
           error={!!error}
           helperText={error ? error?.message : helperText}

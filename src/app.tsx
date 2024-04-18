@@ -12,6 +12,7 @@ import ThemeProvider from 'src/theme';
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
+import { SnackbarProvider } from './components/snackbar';
 
 export default function App() {
   useScrollToTop();
@@ -29,9 +30,11 @@ export default function App() {
     >
       <ThemeProvider>
         <MotionLazy>
-          <SettingsDrawer />
-          <ProgressBar />
-          <Router />
+          <SnackbarProvider>
+            <SettingsDrawer />
+            <ProgressBar />
+            <Router />
+          </SnackbarProvider>
         </MotionLazy>
       </ThemeProvider>
     </SettingsProvider>

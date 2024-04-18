@@ -1,6 +1,8 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import useAuth from 'src/hooks/use-auth';
+
+import { PATH_AFTER_LOGIN, PATH_AFTER_REGISTER } from 'src/config-global';
 
 import { mainRoutes } from './main';
 import { authRoutes } from './auth';
@@ -9,10 +11,12 @@ import { dashboardRoutes } from './dashboard';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const { token } = useAuth();
+
   return useRoutes([
     {
       path: '/',
-      element: <Navigate to={PATH_AFTER_LOGIN} replace />,
+      element: <Navigate to={token ? PATH_AFTER_LOGIN : PATH_AFTER_REGISTER} replace />,
     },
 
     // Auth routes

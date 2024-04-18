@@ -1,31 +1,27 @@
 // ----------------------------------------------------------------------
 
 const ROOTS = {
-  AUTH: '/auth',
   DASHBOARD: '/dashboard',
 };
 
 // ----------------------------------------------------------------------
 
 export const paths = {
-  minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
   // AUTH
-  auth: {
-    jwt: {
-      login: `${ROOTS.AUTH}/login`,
-      register: `${ROOTS.AUTH}/register`,
-    },
-  },
+  login: `/login`,
+  register: `/register`,
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    one: `${ROOTS.DASHBOARD}/one`,
-    two: `${ROOTS.DASHBOARD}/two`,
-    three: `${ROOTS.DASHBOARD}/three`,
-    group: {
-      root: `${ROOTS.DASHBOARD}/group`,
-      five: `${ROOTS.DASHBOARD}/group/five`,
-      six: `${ROOTS.DASHBOARD}/group/six`,
-    },
+    sales: `${ROOTS.DASHBOARD}/sales`,
+    users: `${ROOTS.DASHBOARD}/users`,
+    products: `${ROOTS.DASHBOARD}/products`,
+    category: `${ROOTS.DASHBOARD}/category`,
+    group: `${ROOTS.DASHBOARD}/group`,
+    review: `${ROOTS.DASHBOARD}/review`,
+    inquiry: `${ROOTS.DASHBOARD}/inquiry`,
+    manager: `${ROOTS.DASHBOARD}/manager`,
+    profile: `${ROOTS.DASHBOARD}/profile`,
+    changePassword: `${ROOTS.DASHBOARD}/change-password`,
   },
 };

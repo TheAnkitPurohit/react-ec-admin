@@ -1,6 +1,7 @@
-import * as z from 'zod';
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Link from '@mui/material/Link';
@@ -11,13 +12,16 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 
+import useAuth from 'src/hooks/use-auth';
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { APP_EMAIL, APP_PASSWORD } from 'src/utils/environments';
+
+import authService from 'src/services/authService';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { LoginSchema, LoginInterface } from 'src/validations/auth';
 
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -26,6 +30,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 export default function JwtLoginView() {
   const router = useRouter();
+  const { handleAddCredentails } = useAuth();
 
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -35,53 +40,43 @@ export default function JwtLoginView() {
 
   const password = useBoolean();
 
-  const LoginSchema = z.object({
-    email: z
-      .string()
-      .email('Email must be a valid email address')
-      .refine((data) => data.trim() !== '', { message: 'Email is required' }),
-    password: z.string().refine((data) => data.trim() !== '', { message: 'Password is required' }),
-  });
-
   const defaultValues = {
-    email: 'demo@minimals.cc',
-    password: 'demo1234',
+    email: APP_EMAIL ?? '',
+    password: APP_PASSWORD ?? '',
   };
 
-  const methods = useForm({
+  const methods = useForm<LoginInterface>({
     resolver: zodResolver(LoginSchema),
     defaultValues,
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      // await login?.(data.email, data.password);
+  const { mutate } = useMutation({
+    mutationFn: authService.login,
+    onSuccess: (data) => {
+      const access_token = data?.data?.accessToken;
+      const refresh_token = data?.data?.refreshToken;
+      const auth = { token: access_token, refresh_token };
 
+      handleAddCredentails(auth);
       router.push(returnTo || PATH_AFTER_LOGIN);
-    } catch (error) {
-      console.error(error);
-      reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
-    }
+    },
+    onError: (error: AxiosError | any) => {
+      setErrorMsg(error?.response?.data?.message ?? error.message);
+    },
+  });
+
+  const onSubmit = handleSubmit(async (data) => {
+    mutate(data);
   });
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
-      <Typography variant="h4">Sign in to Minimal</Typography>
-
-      <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2">New user?</Typography>
-
-        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
-          Create an account
-        </Link>
-      </Stack>
+      <Typography variant="h4">Sign in to Admin Dashboard</Typography>
     </Stack>
   );
 
@@ -106,7 +101,15 @@ export default function JwtLoginView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
+      <Link
+        variant="body2"
+        color="inherit"
+        underline="always"
+        sx={{ alignSelf: 'flex-end' }}
+        onClick={() => {
+          router.push('/forgot-password');
+        }}
+      >
         Forgot password?
       </Link>
 
@@ -126,10 +129,6 @@ export default function JwtLoginView() {
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       {renderHead}
-
-      <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
-      </Alert>
 
       {renderForm}
     </FormProvider>

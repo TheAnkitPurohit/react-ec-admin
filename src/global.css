@@ -2,5 +2,20 @@
 @import 'simplebar-react/dist/simplebar.min.css';
 
 .gm-ui-hover-effect {
-    display: none !important;
+  display: none !important;
 }
+
+/* cropper */
+/* .cropContainer {
+  position: relative;
+  background-color: #333;
+}
+
+.reactEasyCrop_Contain {
+  width: 100% !important;
+  object-fit: cover !important;
+}
+
+#rectangle_cropContainer .reactEasyCrop_CropArea {
+  width: 100% !important;
+} */

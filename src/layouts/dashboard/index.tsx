@@ -1,7 +1,16 @@
+import { useQuery } from '@tanstack/react-query';
+
 import Box from '@mui/material/Box';
 
+import { useRouter } from 'src/routes/hooks';
+
+import useAuth from 'src/hooks/use-auth';
+import useProfile from 'src/hooks/use-profile';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
+
+import { PATH_AFTER_REGISTER } from 'src/config-global';
+import profileService from 'src/services/profileService';
 
 import { useSettingsContext } from 'src/components/settings';
 
@@ -19,10 +28,18 @@ type Props = {
 
 export default function DashboardLayout({ children }: Props) {
   const settings = useSettingsContext();
+  const router = useRouter();
+  const { handleResetAuth } = useAuth();
+  const { handleSetProfile } = useProfile();
 
   const lgUp = useResponsive('up', 'lg');
 
   const nav = useBoolean();
+
+  const { data, isSuccess, isLoading, isError } = useQuery({
+    queryKey: ['profile'],
+    queryFn: profileService.me,
+  });
 
   const isHorizontal = settings.themeLayout === 'horizontal';
 
@@ -33,6 +50,19 @@ export default function DashboardLayout({ children }: Props) {
   const renderHorizontal = <NavHorizontal />;
 
   const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />;
+
+  if (isError) {
+    handleResetAuth();
+    router.push(PATH_AFTER_REGISTER);
+  }
+
+  if (isSuccess && data) {
+    handleSetProfile(data);
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (isHorizontal) {
     return (

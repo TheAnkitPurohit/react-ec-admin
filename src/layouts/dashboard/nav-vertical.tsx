@@ -6,8 +6,8 @@ import Drawer from '@mui/material/Drawer';
 
 import { usePathname } from 'src/routes/hooks';
 
+import useProfile from 'src/hooks/use-profile';
 import { useResponsive } from 'src/hooks/use-responsive';
-import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
@@ -25,13 +25,12 @@ type Props = {
 };
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
-  const { user } = useMockedUser();
-
+  const { profile } = useProfile();
   const pathname = usePathname();
 
   const lgUp = useResponsive('up', 'lg');
 
-  const navData = useNavData();
+  const navData = useNavData(profile?.isMainAdmin);
 
   useEffect(() => {
     if (openNav) {
@@ -53,12 +52,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     >
       <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
 
-      <NavSectionVertical
-        data={navData}
-        slotProps={{
-          currentRole: user?.role,
-        }}
-      />
+      <NavSectionVertical data={navData} />
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

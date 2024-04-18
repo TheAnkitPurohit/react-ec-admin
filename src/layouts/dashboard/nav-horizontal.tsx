@@ -4,7 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useTheme } from '@mui/material/styles';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
+import useProfile from 'src/hooks/use-profile';
 
 import { bgBlur } from 'src/theme/css';
 
@@ -20,9 +20,9 @@ import HeaderShadow from '../common/header-shadow';
 function NavHorizontal() {
   const theme = useTheme();
 
-  const { user } = useMockedUser();
+  const { profile } = useProfile();
 
-  const navData = useNavData();
+  const navData = useNavData(profile?.isMainAdmin);
 
   return (
     <AppBar
@@ -47,9 +47,6 @@ function NavHorizontal() {
         >
           <NavSectionHorizontal
             data={navData}
-            slotProps={{
-              currentRole: user?.role,
-            }}
             sx={{
               ...theme.mixins.toolbar,
             }}

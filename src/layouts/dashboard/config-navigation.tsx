@@ -4,78 +4,52 @@ import { paths } from 'src/routes/paths';
 
 import SvgColor from 'src/components/svg-color';
 
-// ----------------------------------------------------------------------
-
 const icon = (name: string) => (
   <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
-  // OR
-  // <Iconify icon="fluent:mail-24-filled" />
-  // https://icon-sets.iconify.design/solar/
-  // https://www.streamlinehq.com/icons
 );
 
 const ICONS = {
-  job: icon('ic_job'),
-  blog: icon('ic_blog'),
-  chat: icon('ic_chat'),
-  mail: icon('ic_mail'),
-  user: icon('ic_user'),
-  file: icon('ic_file'),
-  lock: icon('ic_lock'),
-  tour: icon('ic_tour'),
-  order: icon('ic_order'),
-  label: icon('ic_label'),
-  blank: icon('ic_blank'),
-  kanban: icon('ic_kanban'),
-  folder: icon('ic_folder'),
-  banking: icon('ic_banking'),
-  booking: icon('ic_booking'),
-  invoice: icon('ic_invoice'),
-  product: icon('ic_product'),
-  calendar: icon('ic_calendar'),
-  disabled: icon('ic_disabled'),
-  external: icon('ic_external'),
-  menuItem: icon('ic_menu_item'),
-  ecommerce: icon('ic_ecommerce'),
-  analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
+  sales: icon('ic_invoice'),
+  users: icon('ic_user'),
+  products: icon('ic_ecommerce'),
+  category: icon('ic_menu_item'),
+  group: icon('ic_analytics'),
+  manager: icon('ic_banking'),
+  review: icon('ic_label'),
+  inquiry: icon('ic_mail'),
 };
 
-// ----------------------------------------------------------------------
+export function useNavData(isMainAdmin: boolean = false) {
+  const managementItems = [
+    { title: 'User', path: paths.dashboard.users, icon: ICONS.users },
+    { title: 'Product', path: paths.dashboard.products, icon: ICONS.products },
+    { title: 'Category', path: paths.dashboard.category, icon: ICONS.category },
+    { title: 'Group', path: paths.dashboard.group, icon: ICONS.group },
+  ];
 
-export function useNavData() {
+  if (isMainAdmin) {
+    managementItems.push({ title: 'Manager', path: paths.dashboard.manager, icon: ICONS.manager });
+  }
+
   const data = useMemo(
     () => [
-      // OVERVIEW
-      // ----------------------------------------------------------------------
       {
-        subheader: 'overview v5.6.0',
+        subheader: 'Overview',
         items: [
-          { title: 'one', path: paths.dashboard.root, icon: ICONS.dashboard },
-          { title: 'two', path: paths.dashboard.two, icon: ICONS.ecommerce },
-          {
-            title: 'three',
-            path: paths.dashboard.three,
-            icon: ICONS.analytics,
-          },
+          { title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard },
+          { title: 'Sales', path: paths.dashboard.sales, icon: ICONS.sales },
         ],
       },
-
-      // MANAGEMENT
-      // ----------------------------------------------------------------------
       {
-        subheader: 'management',
+        subheader: 'Management',
+        items: managementItems,
+      },
+      {
+        subheader: 'Feedback & Support',
         items: [
-          {
-            title: 'user',
-            path: paths.dashboard.group.root,
-            icon: ICONS.user,
-            children: [
-              { title: 'four', path: paths.dashboard.group.root },
-              { title: 'five', path: paths.dashboard.group.five },
-              { title: 'six', path: paths.dashboard.group.six },
-            ],
-          },
+          { title: 'Review', path: paths.dashboard.review, icon: ICONS.review },
+          { title: 'Inquiry', path: paths.dashboard.inquiry, icon: ICONS.inquiry },
         ],
       },
     ],

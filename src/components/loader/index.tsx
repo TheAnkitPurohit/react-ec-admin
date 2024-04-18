@@ -49,3 +49,21 @@ export default function CustomizedProgressBars() {
     </Box>
   );
 }
+
+export const LinearProgressLoader = () => (
+  <Box
+    sx={{
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      py: 6,
+      // position: 'absolute',
+      // top: '50%',
+      // left: '50%',
+      // transform: 'translate(-50%, -50%)',
+    }}
+  >
+    <CircularProgress />
+  </Box>
+);
