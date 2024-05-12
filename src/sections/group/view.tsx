@@ -14,22 +14,22 @@ import useToaster from 'src/hooks/use-toaster';
 import { useBoolean } from 'src/hooks/use-boolean';
 import usePagination from 'src/hooks/use-pagination';
 
-import categoryService from 'src/services/categoryService';
+import groupService from 'src/services/groupService';
 
 import PageTitle from 'src/components/typography/PageTitle';
 import { LinearProgressLoader } from 'src/components/loader';
 import MainDarkBtn from 'src/components/buttons/MainDarkBtn';
 import FormProvider from 'src/components/hook-form/form-provider';
 import DeleteModal from 'src/components/modal/common/DeleteModal';
-import CategorySearchFilter from 'src/components/search-filter/category';
-import AddCategoryModal from 'src/components/modal/category/AddCategoryModal';
+import AddGroupModal from 'src/components/modal/group/AddGroupModal';
+import GroupSearchFilter from 'src/components/search-filter/category';
 import MultiFunctionalTable from 'src/components/CommonTable/MultiFunctionalTable';
-import CategoryFilterResult from 'src/components/search-filter/category/CategoryFilterResult';
+import GroupFilterResult from 'src/components/search-filter/category/CategoryFilterResult';
 
 // ----------------------------------------------------------------------
 
-const CategoryPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
+const GroupPage = () => {
+  const [selectedGroup, setSelectedGroup] = useState<Group>();
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -37,7 +37,7 @@ const CategoryPage = () => {
     usePagination();
   const { errorToast, successToast } = useToaster();
 
-  const initialValues: CategorySearchFilterInterface = {
+  const initialValues: GroupSearchFilterInterface = {
     name: '',
     order: undefined,
     dateRange: undefined,
@@ -84,15 +84,15 @@ const CategoryPage = () => {
   const [filters, setFilters] = useState<CategorySearchFilterInterface>(defaultSearchValues);
 
   const queryClient = useQueryClient();
-  const queryKey = 'categorylist';
+  const queryKey = 'grouplist';
 
   const { data, isLoading } = useQuery({
     queryKey: [queryKey, { filters }],
-    queryFn: () => categoryService.list(filters),
+    queryFn: () => groupService.list(filters),
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: categoryService.delete,
+    mutationFn: groupService.delete,
     onSuccess: (response) => {
       successToast(response?.message);
       queryClient.invalidateQueries({ queryKey: [queryKey] });
@@ -113,40 +113,39 @@ const CategoryPage = () => {
   const { handleSubmit, reset, setValue } = methods;
 
   const handleOpenCreateModal = () => {
-    setSelectedCategory(undefined);
+    setSelectedGroup(undefined);
     addModal.onTrue();
   };
 
   const handleOpenEditModal = (params: any) => {
-    setSelectedCategory(params.row);
+    setSelectedGroup(params.row);
     addModal.onTrue();
   };
-
   const handleOpenDeleteModal = (e: any, element: Category) => {
     e.stopPropagation();
     deleteModal.onTrue();
-    setSelectedCategory(element);
+    setSelectedGroup(element);
   };
 
   const handleCloseModal = () => {
     addModal.onFalse();
     deleteModal.onFalse();
-    setSelectedCategory(undefined);
+    setSelectedGroup(undefined);
   };
 
   const columns: GridColDef[] = [
-    // {
-    //   field: '_id',
-    //   width: 250,
-    //   headerName: 'Id',
-    //   align: 'left',
-    //   headerAlign: 'left',
-    //   renderCell: (params) => (
-    //     <Typography sx={{ fontSize: '15px' }}>
-    //       {params?.row?._id ? params?.row?._id : '-'}
-    //     </Typography>
-    //   ),
-    // },
+    {
+      field: '_id',
+      width: 250,
+      headerName: 'Id',
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: (params) => (
+        <Typography sx={{ fontSize: '15px' }}>
+          {params?.row?._id ? params?.row?._id : '-'}
+        </Typography>
+      ),
+    },
     {
       field: 'name',
       width: 200,
@@ -226,7 +225,6 @@ const CategoryPage = () => {
       ),
     },
   ];
-
   const handleSearchData = (result: CategorySearchFilterInterface) => {
     const searchFilter = {
       ...result,
@@ -271,7 +269,7 @@ const CategoryPage = () => {
 
   const handleResetFilters = () => {
     reset();
-    setSelectedCategory(undefined);
+    setSelectedGroup(undefined);
     handleSearchData(initialValues);
     setValue('dateRange', null);
   };
@@ -297,6 +295,7 @@ const CategoryPage = () => {
     }
 
     updatedValues[name] = defaultValues[name];
+
     handleSearchData(updatedValues);
   };
 
@@ -311,11 +310,11 @@ const CategoryPage = () => {
         }}
       >
         <Box>
-          <PageTitle name="Category" />
+          <PageTitle name="Group" />
         </Box>
         <Box sx={{ pr: 2 }}>
           <MainDarkBtn
-            name="Add Category"
+            name="Add Group"
             handleClick={handleOpenCreateModal}
             iconName="mingcute:add-line"
           />
@@ -332,14 +331,14 @@ const CategoryPage = () => {
           }}
         >
           <FormProvider methods={methods} onSubmit={onSubmit}>
-            <CategorySearchFilter />
+            <GroupSearchFilter />
           </FormProvider>
 
           {(filters?.name && filters?.name?.length > 0) ||
           (filters?.order && filters?.order > 0) ||
           (filters?.enabled.label && filters?.enabled?.label.length > 0) ||
           (filters?.dateRange && filters?.dateRange?.length > 0) ? (
-            <CategoryFilterResult
+            <GroupFilterResult
               handleRemove={handleRemove}
               defaultSearchValues={initialValues}
               totalResults={data?.length ?? 0}
@@ -376,20 +375,20 @@ const CategoryPage = () => {
         </Box>
       </Box>
 
-      <AddCategoryModal
+      <AddGroupModal
         open={addModal?.value}
-        currentCagory={selectedCategory}
+        currentGroup={selectedGroup}
         onClose={handleCloseModal}
       />
 
       <DeleteModal
-        title="Category"
+        title="Group"
         open={deleteModal.value}
         onClose={handleCloseModal}
         isSubmitting={isPending}
         handleConfirm={() => {
-          if (selectedCategory?._id) {
-            mutate(selectedCategory?._id);
+          if (selectedGroup?._id) {
+            mutate(selectedGroup?._id);
           }
         }}
       />
@@ -397,4 +396,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default GroupPage;

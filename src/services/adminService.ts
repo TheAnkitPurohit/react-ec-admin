@@ -24,12 +24,12 @@ const adminService = {
     }
     const listParams = queryString.stringifyUrl({
       url: '/admin/list',
-      query: {
-        name: params.search,
-        status: params.status.value,
-        startDate,
-        endDate,
-      },
+      // query: {
+      //   name: params.search,
+      //   status: params.status.value,
+      //   startDate,
+      //   endDate,
+      // },
     });
     const response: AxiosResponse<any> = await client.get(listParams);
     return response?.data?.data;

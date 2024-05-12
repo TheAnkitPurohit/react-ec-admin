@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import { useState, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
@@ -34,6 +37,19 @@ export default function AdminFilterResult({
   handleRemove,
   ...other
 }: Props) {
+  const [dateRange, setDateRange] = useState('');
+
+  useEffect(() => {
+    if (values.dateRange) {
+      const [first, second] = values.dateRange;
+      const createdFrom = dayjs(first).format('YYYY-MM-DD');
+      const createdTo = dayjs(second).format('YYYY-MM-DD');
+      setDateRange(`${createdFrom}-${createdTo}`);
+    } else {
+      setDateRange('');
+    }
+  }, [values?.dateRange]);
+
   return (
     <Stack spacing={1.5} {...other} sx={{ mt: 1.8 }}>
       <Box sx={{ typography: 'body2' }}>
@@ -64,6 +80,33 @@ export default function AdminFilterResult({
           </Block>
         )}
 
+        <Box
+          sx={{
+            borderRadius: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {values?.dateRange && values?.dateRange?.length > 0 && (
+            <Block label="Date">
+              <Chip
+                label={dateRange}
+                size="small"
+                onDelete={() => {
+                  handleRemove('dateRange');
+                }}
+                sx={{
+                  background: cyan.main,
+                  '&:hover': {
+                    background: cyan.dark,
+                    color: 'white',
+                  },
+                }}
+              />
+            </Block>
+          )}
+        </Box>
+
         {values?.status?.label !== defaultSearchValues?.status?.label && (
           <Block label="Status">
             <Chip
@@ -82,32 +125,6 @@ export default function AdminFilterResult({
             />
           </Block>
         )}
-        <Box
-          sx={{
-            borderRadius: 1,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          {values?.dateRange !== defaultSearchValues?.dateRange && (
-            <Block label="Date">
-              <Chip
-                label={values?.dateRange}
-                size="small"
-                onDelete={() => {
-                  handleRemove('dateRange');
-                }}
-                sx={{
-                  background: cyan.main,
-                  '&:hover': {
-                    background: cyan.dark,
-                    color: 'white',
-                  },
-                }}
-              />
-            </Block>
-          )}
-        </Box>
 
         <Button
           color="error"

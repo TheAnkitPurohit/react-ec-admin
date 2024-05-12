@@ -1,5 +1,4 @@
 import 'dayjs/locale/en';
-import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -7,14 +6,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
-import { createAdminSchema } from 'src/schemas/admin';
+import useToaster from 'src/hooks/use-toaster';
+
+import { createAdminSchema } from 'src/validations/admin';
 import adminService, { CreateAdminInterface } from 'src/services/adminService';
 
-import FormSubmitBtn from 'src/components/buttons/SubmitButton';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+
+import ModalFooter from '../ModalFooter';
 
 // ----------------------------------------------------------------------
 
@@ -24,33 +25,18 @@ type Props = {
 };
 
 export default function CreateAdminModal({ open, onClose }: Props) {
-  const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const { errorToast, successToast } = useToaster();
 
   const { mutate, isPending } = useMutation({
     mutationFn: adminService.create,
     onSuccess: (response) => {
-      console.log({ response });
-      enqueueSnackbar(response?.message, {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'right',
-        },
-        autoHideDuration: 2000,
-      });
+      successToast(response?.message);
       queryClient.invalidateQueries({ queryKey: ['managerlist'] });
       handleClose();
     },
     onError(error) {
-      enqueueSnackbar(error?.message, {
-        variant: 'error',
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'right',
-        },
-        autoHideDuration: 2000,
-      });
+      errorToast(error?.message);
     },
   });
 
@@ -72,8 +58,7 @@ export default function CreateAdminModal({ open, onClose }: Props) {
   const {
     reset,
     handleSubmit,
-    getValues,
-    formState: { isSubmitting, isDirty },
+    formState: { isDirty },
   } = methods;
 
   const onSubmit = handleSubmit(async (result: CreateAdminInterface) => {
@@ -108,23 +93,7 @@ export default function CreateAdminModal({ open, onClose }: Props) {
           </Box>
         </DialogContent>
 
-        <DialogActions>
-          <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', gap: 1 }}>
-            <FormSubmitBtn
-              name="Cancel"
-              handleClick={handleClose}
-              BtnType="button"
-              BackGroundColor="#A3A3A3"
-            />
-
-            <FormSubmitBtn
-              BackGroundColor="#4299e1"
-              isSubmitting={isSubmitting}
-              name="Create"
-              isDisabled={!isDirty}
-            />
-          </Box>
-        </DialogActions>
+        <ModalFooter handleClose={handleClose} isSubmitting={isPending} isDisabled={!isDirty} />
       </FormProvider>
     </Dialog>
   );

@@ -21,7 +21,7 @@ import { APP_EMAIL, APP_PASSWORD } from 'src/utils/environments';
 
 import authService from 'src/services/authService';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
-import { LoginSchema, LoginInterface } from 'src/validations/auth';
+import { loginSchema, LoginInterface } from 'src/validations/auth';
 
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -46,7 +46,7 @@ export default function JwtLoginView() {
   };
 
   const methods = useForm<LoginInterface>({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues,
   });
 

@@ -14,7 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import authService from 'src/services/authService';
 import { PATH_AFTER_REGISTER } from 'src/config-global';
-import { ForgotPasswordSchema, ForgotPasswordInterface } from 'src/validations/auth';
+import { forgotPasswordSchema, ForgotPasswordInterface } from 'src/validations/auth';
 
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
@@ -30,7 +30,7 @@ export default function ForgotPasswordView() {
   };
 
   const methods = useForm<ForgotPasswordInterface>({
-    resolver: zodResolver(ForgotPasswordSchema),
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues,
   });
 

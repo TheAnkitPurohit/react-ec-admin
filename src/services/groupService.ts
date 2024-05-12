@@ -4,9 +4,9 @@ import queryString from 'query-string';
 
 import client from 'src/lib/client';
 
-const categoryService = {
+const groupService = {
   create: async (data: any): Promise<any> => {
-    const response: AxiosResponse<any> = await client.post('/category/create', data);
+    const response: AxiosResponse<any> = await client.post('/group/create', data); // Adjust endpoint path
     return response?.data;
   },
   list: async (params: CategorySearchFilterInterface): Promise<any> => {
@@ -20,7 +20,7 @@ const categoryService = {
     }
 
     const listParams = queryString.stringifyUrl({
-      url: '/category',
+      url: '/group', // Adjust endpoint path
       query: {
         name: params.name && params.name !== '' ? params.name : undefined,
         enabled: params.enabled.value !== '' ? params.enabled.value : undefined,
@@ -37,9 +37,9 @@ const categoryService = {
   },
 
   delete: async (id: string): Promise<any> => {
-    const response: AxiosResponse<any> = await client.delete(`/category/delete/${id}`);
+    const response: AxiosResponse<any> = await client.delete(`/group/delete/${id}`); // Adjust endpoint path
     return response?.data;
   },
 };
 
-export default categoryService;
+export default groupService;

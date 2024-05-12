@@ -17,7 +17,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 
 import authService from 'src/services/authService';
 import { PATH_AFTER_REGISTER } from 'src/config-global';
-import { SetPasswordSchema, SetPasswordInterface } from 'src/validations/auth';
+import { setPasswordSchema, SetPasswordInterface } from 'src/validations/auth';
 
 import Iconify from 'src/components/iconify';
 import { LinearProgressLoader } from 'src/components/loader';
@@ -48,7 +48,7 @@ export default function SetPasswordView() {
   };
 
   const methods = useForm<SetPasswordInterface>({
-    resolver: zodResolver(SetPasswordSchema),
+    resolver: zodResolver(setPasswordSchema),
     defaultValues,
   });
 

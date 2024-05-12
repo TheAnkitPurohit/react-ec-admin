@@ -2,20 +2,20 @@ import * as z from 'zod';
 
 import { nameValidation, emailValidation, passwordValidation } from 'src/validations/shared';
 
-export const LoginSchema = z.object({
+export const loginSchema = z.object({
   email: emailValidation,
   password: passwordValidation,
 });
 
-export type LoginInterface = z.infer<typeof LoginSchema>;
+export type LoginInterface = z.infer<typeof loginSchema>;
 
-export const ForgotPasswordSchema = z.object({
+export const forgotPasswordSchema = z.object({
   email: emailValidation,
 });
 
-export type ForgotPasswordInterface = z.infer<typeof ForgotPasswordSchema>;
+export type ForgotPasswordInterface = z.infer<typeof forgotPasswordSchema>;
 
-export const SetPasswordSchema = z
+export const setPasswordSchema = z
   .object({
     password: passwordValidation,
     confirmPassword: passwordValidation,
@@ -25,15 +25,7 @@ export const SetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
-export type SetPasswordInterface = z.infer<typeof SetPasswordSchema>;
-
-export const createAdminSchema = () =>
-  z.object({
-    email: emailValidation,
-    name: nameValidation,
-  });
-
-export type CreateAdminInterface = z.infer<ReturnType<typeof createAdminSchema>>;
+export type SetPasswordInterface = z.infer<typeof setPasswordSchema>;
 
 export const editProfileSchema = () =>
   z.object({

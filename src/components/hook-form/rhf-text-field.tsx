@@ -9,38 +9,51 @@ type Props = TextFieldProps & {
   isDisable?: boolean;
 };
 
-export default function RHFTextField({ name, helperText, type, isDisable, ...other }: Props) {
+export default function RHFTextField({
+  name,
+  value,
+  defaultValue,
+  helperText,
+  type,
+  isDisable,
+  ...other
+}: Props) {
   const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error, isTouched, isDirty } }) => (
-        <TextField
-          disabled={isDisable}
-          {...field}
-          fullWidth
-          type={type}
-          value={type === 'number' && field.value === 0 ? '' : field.value}
-          onChange={(event) => {
-            if (type === 'number') {
-              field.onChange(Number(event.target.value));
-            } else {
-              field.onChange(event.target.value);
-            }
-            if (isTouched) {
+      render={({ field, fieldState: { error, isTouched, isDirty } }) => {
+        console.log({ field, value, defaultValue });
+
+        return (
+          <TextField
+            disabled={isDisable}
+            {...field}
+            fullWidth
+            type={type}
+            defaultValue={defaultValue}
+            value={type === 'number' && field.value === 0 ? '' : field.value}
+            onChange={(event) => {
+              if (type === 'number') {
+                field.onChange(Number(event.target.value));
+              } else {
+                field.onChange(event.target.value);
+              }
+              if (isTouched) {
+                field.onBlur();
+              }
+            }}
+            onBlur={(event) => {
               field.onBlur();
-            }
-          }}
-          onBlur={(event) => {
-            field.onBlur();
-          }}
-          error={!!error}
-          helperText={error ? error?.message : helperText}
-          {...other}
-        />
-      )}
+            }}
+            error={!!error}
+            helperText={error ? error?.message : helperText}
+            {...other}
+          />
+        );
+      }}
     />
   );
 }

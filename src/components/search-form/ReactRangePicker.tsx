@@ -22,20 +22,24 @@ export default function ReactRangePicker({ name, style }: Props) {
         name={name}
         control={control}
         defaultValue={undefined}
-        render={({ field: { onChange, value } }) => (
-          <DateRangePicker
-            value={value}
-            ranges={[]}
-            cleanable
-            showOneCalendar
-            placement="bottom"
-            format="yyyy/MM/dd"
-            character=" へ "
-            onChange={onChange}
-            showHeader={false}
-            placeholder="yyyy/mm/dd ~ yyyy/mm/dd"
-          />
-        )}
+        render={({ field: { onChange, value } }) => {
+          console.log({ value });
+
+          return (
+            <DateRangePicker
+              value={value}
+              ranges={[]}
+              cleanable
+              showOneCalendar
+              placement="bottom"
+              format="yyyy/MM/dd"
+              character=" へ "
+              onChange={onChange}
+              showHeader={false}
+              placeholder="yyyy/mm/dd ~ yyyy/mm/dd"
+            />
+          );
+        }}
       />
     </Box>
   );

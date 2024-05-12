@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import { useState, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
@@ -15,7 +18,16 @@ type Props = StackProps & {
   totalResults: number;
   values: CategorySearchFilterInterface;
   handleResetFilters: () => void;
-  handleRemove: (name: 'name' | 'enabled' | '_id' | 'order') => void;
+  handleRemove: (
+    name:
+      | 'name'
+      | 'order'
+      | 'enabled'
+      | 'dateRange'
+      | `dateRange.${string}`
+      | 'enabled.label'
+      | 'enabled.value'
+  ) => void;
 };
 
 export default function CategoryFilterResult({
@@ -26,6 +38,19 @@ export default function CategoryFilterResult({
   handleRemove,
   ...other
 }: Props) {
+  const [dateRange, setDateRange] = useState('');
+
+  useEffect(() => {
+    if (values.dateRange) {
+      const [first, second] = values.dateRange;
+      const createdFrom = dayjs(first).format('YYYY-MM-DD');
+      const createdTo = dayjs(second).format('YYYY-MM-DD');
+      setDateRange(`${createdFrom}-${createdTo}`);
+    } else {
+      setDateRange('');
+    }
+  }, [values?.dateRange]);
+
   return (
     <Stack spacing={1.5} {...other} sx={{ mt: 1.8 }}>
       <Box sx={{ typography: 'body2' }}>
@@ -38,7 +63,7 @@ export default function CategoryFilterResult({
 
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
         {values?.name !== defaultSearchValues?.name && (
-          <Block label="Search">
+          <Block label="Name">
             <Chip
               label={values?.name}
               size="small"
@@ -55,14 +80,14 @@ export default function CategoryFilterResult({
             />
           </Block>
         )}
-        {/* 
-        {values?.status?.label !== defaultSearchValues?.status?.label && (
-          <Block label="Status">
+
+        {values?.order !== defaultSearchValues?.order && (
+          <Block label="Order">
             <Chip
-              label={values?.status?.label}
+              label={values?.order}
               size="small"
               onDelete={() => {
-                handleRemove('status');
+                handleRemove('order');
               }}
               sx={{
                 background: cyan.main,
@@ -73,7 +98,53 @@ export default function CategoryFilterResult({
               }}
             />
           </Block>
-        )} */}
+        )}
+
+        <Box
+          sx={{
+            borderRadius: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {values?.dateRange && values?.dateRange?.length > 0 && (
+            <Block label="Date">
+              <Chip
+                label={dateRange}
+                size="small"
+                onDelete={() => {
+                  handleRemove('dateRange');
+                }}
+                sx={{
+                  background: cyan.main,
+                  '&:hover': {
+                    background: cyan.dark,
+                    color: 'white',
+                  },
+                }}
+              />
+            </Block>
+          )}
+        </Box>
+
+        {values?.enabled?.label !== defaultSearchValues?.enabled?.label && (
+          <Block label="Status">
+            <Chip
+              label={values?.enabled?.label}
+              size="small"
+              onDelete={() => {
+                handleRemove('enabled');
+              }}
+              sx={{
+                background: cyan.main,
+                '&:hover': {
+                  background: cyan.dark,
+                  color: 'white',
+                },
+              }}
+            />
+          </Block>
+        )}
 
         <Button
           color="error"

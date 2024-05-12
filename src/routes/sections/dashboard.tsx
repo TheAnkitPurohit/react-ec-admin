@@ -9,6 +9,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 const DashboardPage = lazy(() => import('src/pages/dashboard'));
 const CategoryPage = lazy(() => import('src/pages/dashboard/category'));
+const GroupPage = lazy(() => import('src/pages/dashboard/group'));
 const ManagerPage = lazy(() => import('src/pages/dashboard/manager'));
 const ProfilePage = lazy(() => import('src/pages/dashboard/profile'));
 const ChangePasswordPage = lazy(() => import('src/pages/dashboard/change-password'));
@@ -31,7 +32,7 @@ export const dashboardRoutes = [
       { path: 'users', element: <CategoryPage /> },
       { path: 'products', element: <CategoryPage /> },
       { path: 'category', element: <CategoryPage /> },
-      { path: 'group', element: <CategoryPage /> },
+      { path: 'group', element: <GroupPage /> },
       { path: 'review', element: <CategoryPage /> },
       { path: 'inquiry', element: <CategoryPage /> },
       { path: 'manager', element: <ManagerPage /> },

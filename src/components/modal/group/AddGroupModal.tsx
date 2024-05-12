@@ -11,8 +11,8 @@ import DialogContent from '@mui/material/DialogContent';
 
 import useToaster from 'src/hooks/use-toaster';
 
-import categoryService from 'src/services/categoryService';
-import { createCategorySchema } from 'src/validations/category';
+import groupService from 'src/services/groupService'; // Update service import
+import { createGroupSchema } from 'src/validations/group'; // Update validation import
 
 import RHFSwitch from 'src/components/hook-form/rhf-switch';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -24,19 +24,19 @@ import ModalFooter from '../ModalFooter';
 type Props = {
   open: boolean;
   onClose: VoidFunction;
-  currentCagory: Category | undefined;
+  currentGroup: Group | undefined; // Update type to Group
 };
 
-export default function AddCategoryModal({ open, onClose, currentCagory }: Props) {
-  const isCreate = !currentCagory?._id;
+export default function AddGroupModal({ open, onClose, currentGroup }: Props) {
+  const isCreate = !currentGroup?._id;
   const queryClient = useQueryClient();
   const { errorToast, successToast } = useToaster();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: categoryService.create,
+    mutationFn: groupService.create, // Adjust service function call
     onSuccess: (response) => {
       successToast(response?.message);
-      queryClient.invalidateQueries({ queryKey: ['categorylist'] });
+      queryClient.invalidateQueries({ queryKey: ['grouplist'] }); // Adjust query key
       handleClose();
     },
     onError(error) {
@@ -44,16 +44,16 @@ export default function AddCategoryModal({ open, onClose, currentCagory }: Props
     },
   });
 
-  const defaultValues: Category = {
-    name: currentCagory?.name ?? '',
-    order: currentCagory?.order ?? '',
-    enabled: currentCagory?.enabled ?? false,
+  const defaultValues: Group = {
+    name: currentGroup?.name ?? '',
+    order: currentGroup?.order ?? '',
+    enabled: currentGroup?.enabled ?? false,
   };
 
   console.log({ defaultValues });
 
-  const methods = useForm<Category>({
-    resolver: zodResolver(createCategorySchema()),
+  const methods = useForm<Group>({
+    resolver: zodResolver(createGroupSchema()), // Adjust validation schema
     defaultValues,
   });
 
@@ -91,7 +91,7 @@ export default function AddCategoryModal({ open, onClose, currentCagory }: Props
       }}
     >
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <DialogTitle>{isCreate ? 'Create Cateogry' : 'Update Category'}</DialogTitle>
+        <DialogTitle>{isCreate ? 'Create Group' : 'Update Group'}</DialogTitle> {/* Update title */}
         <DialogContent>
           <Box
             rowGap={3}
@@ -129,7 +129,6 @@ export default function AddCategoryModal({ open, onClose, currentCagory }: Props
             />
           </Box>
         </DialogContent>
-
         <ModalFooter
           handleClose={handleClose}
           isSubmitting={isPending}
