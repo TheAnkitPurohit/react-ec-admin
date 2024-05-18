@@ -1,5 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
-
 import Box from '@mui/material/Box';
 import { Rating } from '@mui/material';
 import { alpha } from '@mui/material/styles';
@@ -7,20 +5,12 @@ import { GridColDef } from '@mui/x-data-grid';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import productService from 'src/services/productService';
-
-import CustomizedProgressBars from 'src/components/loader';
 import { useSettingsContext } from 'src/components/settings';
-import ProductTable from 'src/components/table/ProductTable';
 
 // ----------------------------------------------------------------------
 
 export default function OneView() {
   const settings = useSettingsContext();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['products'],
-    queryFn: productService.getProductList,
-  });
 
   const ProductColumns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -46,10 +36,6 @@ export default function OneView() {
     },
   ];
 
-  if (isLoading) {
-    return <CustomizedProgressBars />;
-  }
-
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography variant="h4"> Product Page </Typography>
@@ -64,7 +50,8 @@ export default function OneView() {
           border: (theme) => `dashed 1px ${theme.palette.divider}`,
         }}
       >
-        <ProductTable data={data} columns={ProductColumns} />
+        {/* <ProductTable data={data} columns={ProductColumns} /> */}
+        Dashbopardssdsd
       </Box>
     </Container>
   );

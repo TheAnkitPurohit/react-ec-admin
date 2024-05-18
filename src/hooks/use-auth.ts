@@ -1,28 +1,16 @@
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import {
-  AuthState,
-  resetState,
-  setCredentials,
-  selectCurrentToken,
-  selectCurrentRefreshToken,
-} from 'src/store/slices/authSlice';
+import useTokenStore, { AuthState } from 'src/store/useAuthStore';
 
 const useAuth = () => {
-  const token = useAppSelector(selectCurrentToken);
-  const refreshToken = useAppSelector(selectCurrentRefreshToken);
-
-  const dispatch = useAppDispatch();
+  const { token, refresh_token, setCredentials, resetToken } = useTokenStore((state) => state);
 
   const handleAddCredentails = (credentails: AuthState) => {
-    localStorage.setItem('auth', JSON.stringify(credentails));
-    dispatch(setCredentials(credentails));
+    setCredentials(credentails.token, credentails.refresh_token);
   };
 
   const handleResetAuth = () => {
-    dispatch(resetState());
-    localStorage.removeItem('auth');
+    resetToken();
   };
-  return { token, refreshToken, handleAddCredentails, handleResetAuth };
+  return { token, refresh_token, handleAddCredentails, handleResetAuth };
 };
 
 export default useAuth;

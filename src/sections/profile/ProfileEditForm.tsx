@@ -14,7 +14,7 @@ import { BACKEND_URL } from 'src/utils/environments';
 
 import profileService from 'src/services/profileService';
 import { editProfileSchema } from 'src/validations/auth';
-import { ProfileState } from 'src/store/slices/profileSlice';
+import { ProfileState } from 'src/store/useProfileStore';
 
 import { RHFTextField } from 'src/components/hook-form';
 import FormSubmitBtn from 'src/components/buttons/SubmitButton';

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 
@@ -29,17 +29,36 @@ type Props = {
 export default function DashboardLayout({ children }: Props) {
   const settings = useSettingsContext();
   const router = useRouter();
-  const { handleResetAuth } = useAuth();
+  const { handleResetAuth, token } = useAuth();
   const { handleSetProfile } = useProfile();
 
   const lgUp = useResponsive('up', 'lg');
 
   const nav = useBoolean();
 
-  const { data, isSuccess, isLoading, isError } = useQuery({
-    queryKey: ['profile'],
-    queryFn: profileService.me,
-  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getProfileData = async () => {
+    setIsLoading(true);
+    try {
+      const data = await profileService.me();
+      handleSetProfile(data);
+    } catch (error) {
+      handleResetAuth();
+      router.push(PATH_AFTER_REGISTER);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!token) {
+      handleResetAuth();
+      router.push(PATH_AFTER_REGISTER);
+      return;
+    }
+    getProfileData();
+  }, []);
 
   const isHorizontal = settings.themeLayout === 'horizontal';
 
@@ -50,15 +69,6 @@ export default function DashboardLayout({ children }: Props) {
   const renderHorizontal = <NavHorizontal />;
 
   const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />;
-
-  if (isError) {
-    handleResetAuth();
-    router.push(PATH_AFTER_REGISTER);
-  }
-
-  if (isSuccess && data) {
-    handleSetProfile(data);
-  }
 
   if (isLoading) {
     return <div>Loading...</div>;

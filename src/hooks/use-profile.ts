@@ -1,13 +1,10 @@
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { setProfile, ProfileState, selectCurrentProfile } from 'src/store/slices/profileSlice';
+import useProfileStore, { ProfileState } from 'src/store/useProfileStore';
 
 const useProfile = () => {
-  const profile = useAppSelector(selectCurrentProfile);
-
-  const dispatch = useAppDispatch();
+  const profile = useProfileStore((state) => state);
 
   const handleSetProfile = (profileData: ProfileState) => {
-    dispatch(setProfile(profileData));
+    profile.setProfile(profileData);
   };
 
   return { profile, handleSetProfile };

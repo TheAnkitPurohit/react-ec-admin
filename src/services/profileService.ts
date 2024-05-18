@@ -7,9 +7,10 @@ export interface LoginTypes {
   password: string;
 }
 
-const authService = {
+const profileService = {
   me: async (): Promise<any> => {
     const response: AxiosResponse<any> = await client.get('/profile/me');
+    console.log({ response });
     return response?.data?.data;
   },
 
@@ -28,4 +29,4 @@ const authService = {
   },
 };
 
-export default authService;
+export default profileService;

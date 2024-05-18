@@ -1,15 +1,13 @@
 import client from './client';
 import { BASE_URL } from '../utils/environments';
 import axios from 'axios';
-
-import { resetState, setCredentials } from '../store/slices/authSlice';
+import useTokenStore from 'src/store/useAuthStore';
 
 let isRefreshTokenUpdating = false;
 
-export default function addAuthTokenInterceptor(store) {
+export default function addAuthTokenInterceptor() {
   client.interceptors.request.use((req) => {
-    const { token } = store.getState().auth;
-
+    const { token } = useTokenStore.getState();
     if (!token) return req;
     req.headers.Authorization = `Bearer ${token}`;
     return req;
@@ -18,7 +16,7 @@ export default function addAuthTokenInterceptor(store) {
   client.interceptors.response.use(
     (res) => res,
     async (error) => {
-      const { token, refresh_token } = store.getState().auth;
+      const { token, refresh_token, setCredentials, resetToken } = useTokenStore.getState();
 
       if (!token || !refresh_token) return Promise.reject(error);
 
@@ -54,23 +52,19 @@ export default function addAuthTokenInterceptor(store) {
 
             const result = await axios.request(config);
 
-            console.log({ result });
             isRefreshTokenUpdating = false;
 
             const { accessToken, refreshToken } = result?.data?.data;
-            store.dispatch(
-              setCredentials({
-                token: accessToken,
-                refresh_token: refreshToken,
-              })
-            );
+            setCredentials({
+              token: accessToken,
+              refresh_token: refreshToken,
+            });
             return client(originalConfig);
           } catch (error) {
             console.log({ Token: JSON.stringify(error) });
             isRefreshTokenUpdating = false;
-            store.dispatch(resetState());
+            resetToken();
             window.location.reload();
-            return localStorage.removeItem('auth');
           }
         } else if (isRefreshTokenUpdating) {
           await isRefreshTokenDone();
@@ -78,8 +72,7 @@ export default function addAuthTokenInterceptor(store) {
           return client(originalConfig);
         } else if (token && token.length === 0) {
           console.log('Not token');
-          store.dispatch(resetState());
-          localStorage.removeItem('auth');
+          resetToken();
           window.location = '/login';
           return Promise.reject(error?.response?.data);
         } else {
